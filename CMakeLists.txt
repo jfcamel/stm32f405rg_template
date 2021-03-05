@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.10)
 get_filename_component(PROJ ${CMAKE_CURRENT_LIST_DIR} NAME)
 project(${PROJ})
 
+INCLUDE_DIRECTORIES(Drivers/FreeRTOS)
+
 SET(PREFIX arm-none-eabi)
 SET(CMAKE_C_COMPILER ${PREFIX}-gcc)
 SET(CMAKE_CXX_COMPILER ${PREFIX}-g++)
@@ -54,6 +56,7 @@ set(DEFINITIONS_COMMON
 
 set(C_SOURCES
   ${C_SOURCES_COMMON}
+  ${FREERTOS_SOURCES}
   ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/main.c
   )
 
@@ -78,6 +81,7 @@ set(INCLUDES_COMMON
 
 target_include_directories(${PROJ} PRIVATE
   ${INCLUDES_COMMON}
+  ${FREERTOS_INCLUDES}
   )
 
 target_compile_definitions(${PROJ} PRIVATE
