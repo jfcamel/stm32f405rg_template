@@ -78,7 +78,6 @@ set(INCLUDES_COMMON
 
 target_include_directories(${PROJ} PRIVATE
   ${INCLUDES_COMMON}
-  ${FREERTOS_INCLUDES}
   )
 
 target_compile_definitions(${PROJ} PRIVATE
