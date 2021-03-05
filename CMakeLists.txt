@@ -30,6 +30,7 @@ message(STATUS "FreeRTOS src = ${FREERTOS_SOURCES}")
 message(STATUS "FreeRTOS inc dir = ${FREERTOS_INCLUDES}")
 
 set(C_SOURCES_COMMON
+  ${CMAKE_SOURCE_DIR}/Core/Src/app.c
   ${CMAKE_SOURCE_DIR}/Core/Src/stm32f4xx_it.c
   ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_gpio.c
   ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_rcc.c
