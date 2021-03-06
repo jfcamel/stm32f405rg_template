@@ -44,3 +44,7 @@ Target architecture is "STM32F405RG" which is
 - Optimize options -Os
 - Default rdimon.specs is used
 
+
+## Branches
+
+- [FreeRTOS integration](https://github.com/jfcamel/stm32f405rg_template/tree/freertos_integration) 
