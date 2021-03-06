@@ -49,7 +49,7 @@ extern uint32_t SystemCoreClock;
 #define configUSE_IDLE_HOOK				1
 #define configUSE_TICK_HOOK				1
 #define configCPU_CLOCK_HZ				( SystemCoreClock )
-#define configTICK_RATE_HZ				( ( TickType_t ) 1000 )
+#define configTICK_RATE_HZ				( ( TickType_t ) 400 )
 #define configMAX_PRIORITIES			( 5 )
 #define configMINIMAL_STACK_SIZE		( ( unsigned short ) 130 )
 #define configTOTAL_HEAP_SIZE			( ( size_t ) ( 75 * 1024 ) )
@@ -125,7 +125,6 @@ standard names. */
 #define configSUPPORT_DYNAMIC_ALLOCATION 1
 
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
-#define configENABLE_BACKWARD_COMPATIBILITY 1
 
 #endif /* FREERTOS_CONFIG_H */
 
