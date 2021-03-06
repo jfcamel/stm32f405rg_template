@@ -43,21 +43,6 @@ extern "C" {
      function is called if a stack overflow is detected. */
   void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName );
 
-  /**
-   * task.h
-   * <pre>void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer, StackType_t ** ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize ) </pre>
-   *
-   * This function is used to provide a statically allocated block of memory to FreeRTOS to hold the Idle Task TCB.  This function is required when
-   * configSUPPORT_STATIC_ALLOCATION is set.  For more information see this URI: https://www.FreeRTOS.org/a00110.html#configSUPPORT_STATIC_ALLOCATION
-   *
-   * @param ppxIdleTaskTCBBuffer A handle to a statically allocated TCB buffer
-   * @param ppxIdleTaskStackBuffer A handle to a statically allocated Stack buffer for thie idle task
-   * @param pulIdleTaskStackSize A pointer to the number of elements that will fit in the allocated stack buffer
-   */
-  void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
-                                               StackType_t ** ppxIdleTaskStackBuffer,
-                                               uint32_t * pulIdleTaskStackSize );
-  
 
 #ifdef __cplusplus
 }

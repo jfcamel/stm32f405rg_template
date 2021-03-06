@@ -5,9 +5,6 @@
 
 #include <stdio.h>
 
-TaskHandle_t task1;
-StackType_t stack1;
-StaticTask_t buf;
 
 void app_init(void) {
   printf("app initialization started\n");
@@ -32,6 +29,7 @@ void app_process(void) {
 
 void vApplicationTickHook( void )
 {
+  printf(".");
 }
 
 void vApplicationMallocFailedHook( void )
@@ -49,10 +47,3 @@ void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
   taskDISABLE_INTERRUPTS();
   for( ;; );
 }
-
-void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
-                                    StackType_t ** ppxIdleTaskStackBuffer,
-                                    uint32_t * pulIdleTaskStackSize )
-{
-}
-  
