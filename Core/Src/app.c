@@ -10,7 +10,7 @@ void app_init(void) {
   printf("app initialization started\n");
   xTaskCreate((TaskFunction_t)app_process,
               "app task",
-              1024,
+              200,
               NULL,
               0,
               NULL
