@@ -33,6 +33,7 @@ message(STATUS "FreeRTOS inc dir = ${FREERTOS_INCLUDES}")
 set(C_SOURCES_COMMON
   ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_gpio.c
   ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_rcc.c
+  ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_spi.c
   ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_utils.c
   ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_exti.c
   )
@@ -57,6 +58,7 @@ set(C_SOURCES_Core
   ${C_SOURCES_COMMON}
   ${FREERTOS_SOURCES}
   ${CMAKE_SOURCE_DIR}/Core/Src/app.c
+  ${CMAKE_SOURCE_DIR}/Core/Src/spiflash.c
   ${CMAKE_SOURCE_DIR}/Core/Src/stm32f4xx_it.c
   ${CMAKE_SOURCE_DIR}/Core/Src/system_stm32f4xx.c
   )
