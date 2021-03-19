@@ -6,7 +6,8 @@ set(CMAKE_CXX_LINK_FLAGS "${CMAKE_C_FLAGS} -T${CMAKE_CURRENT_LIST_DIR}/STM32F405
 
 set(CXX_SOURCES_static_tasks
   ${C_SOURCES_COMMON}
-  ${C_SOURCES_Core}
+  ${CMAKE_CURRENT_LIST_DIR}/Src/stm32f4xx_it.c
+  ${CMAKE_CURRENT_LIST_DIR}/Src/system_stm32f4xx.c
   ${CMAKE_CURRENT_LIST_DIR}/Src/main.cpp
   ${ASM_SOURCES_Core}
   )
@@ -28,11 +29,14 @@ add_executable(${EXECNAME}
 target_include_directories(${EXECNAME} PRIVATE
   ${INCLUDES_COMMON}
   ${FREERTOS_INCLUDES}
-  ${CMAKE_SOURCE_DIR}/Core/Inc/
+  ${CMAKE_CURRENT_LIST_DIR}/Inc/
   )
 
 target_compile_definitions(${EXECNAME} PRIVATE
+  ${DEFINITIONS_COMMON}
   ${DEFINITIONS_static_tasks}
+  -DconfigTICK_RATE_HZ=1000
+  -DconfigIDLE_SHOULD_YIELD=0
   )
 
 target_link_libraries(${EXECNAME}

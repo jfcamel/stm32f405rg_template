@@ -8,6 +8,7 @@
 
 #include "main.h"
 
+
 // void vApplicationTickHook( void )
 // {
 //   printf(".");
@@ -28,6 +29,7 @@ void vApplicationIdleHook( void )
 //   taskDISABLE_INTERRUPTS();
 //   for( ;; );
 // }
+
 
 
 void SystemClock_Config(void)
@@ -59,7 +61,7 @@ void SystemClock_Config(void)
   while(LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL)
   {
   }
-  // LL_Init1msTick(100000000);
+  LL_Init1msTick(100000000);
   LL_SetSystemCoreClock(100000000);
 }
 
@@ -71,8 +73,6 @@ int main(void)
   NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
 
   SystemClock_Config();
-
-  vTaskStartScheduler();
 
   while (1)
   {
