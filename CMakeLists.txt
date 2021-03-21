@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
 get_filename_component(PROJ ${CMAKE_CURRENT_LIST_DIR} NAME)
-project(${PROJ})
 project(${PROJ} LANGUAGES C CXX)
 
 SET(PREFIX arm-none-eabi)
@@ -11,20 +10,21 @@ SET(CMAKE_ASM_COMPILER ${PREFIX}-as)
 SET(CMAKE_OBJCPY ${PREFIX}-objcopy)
 
 set(CPU "-mcpu=cortex-m4")
+set(THUMB "-mthumb")
 set(FPU "-mfpu=fpv4-sp-d16")
 set(FLOAT-ABI "-mfloat-abi=hard")
-set(MCU "${CPU} -mthumb ${FPU} ${FLOAT-ABI}")
+set(MCU "${CPU} ${THUMB} ${FPU} ${FLOAT-ABI}")
 
 set(DEBUG "-g3")
-set(OPTIMIZE "-Os")
+set(OPTIMIZATION_LEVEL "-Os")
 
-set(CMAKE_C_FLAGS "${MCU} ${OPTIMIZE} ${DEBUG} -ffunction-sections -fdata-sections -Wall")
+set(CMAKE_C_FLAGS "${MCU} ${OPTIMIZATION_LEVEL} ${DEBUG} -ffunction-sections -fdata-sections -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -fpermissive -fexceptions -fnon-call-exceptions -fno-rtti -fno-use-cxa-atexit -fno-common")
 # set(CMAKE_C_LINK_FLAGS "${CMAKE_C_FLAGS} -T${CMAKE_CURRENT_LIST_DIR}/STM32F405RGTx_FLASH.ld  --specs=nano.specs -Wl,--gc-sections")
 set(CMAKE_C_LINK_FLAGS "${CMAKE_C_FLAGS} -T${PROJECT_SOURCE_DIR}/STM32F405RGTx_FLASH.ld  --specs=rdimon.specs -Wl,--gc-sections")
 
-
-add_subdirectory("Drivers/FreeRTOS/")
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindFreeRTOS.cmake)
+FindFreeRTOS(COMPILER GCC PROCESSOR ARM_CM4F HEAP heap_1)
 
 set(C_SOURCES_COMMON
   ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_gpio.c
@@ -49,6 +49,12 @@ set(DEFINITIONS_COMMON
   -DSTM32F405xx
   )
 
+set(INCLUDES_COMMON
+  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include/
+  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/STM32F4xx/Include/
+  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Inc/
+  )
+
 set(C_SOURCES_Core
   ${C_SOURCES_COMMON}
   ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/app.c
@@ -66,19 +72,29 @@ set_property(SOURCE
 add_executable(${PROJ}
   ${C_SOURCES_Core}
   ${ASM_SOURCES_Core}
+  ${FREERTOS_SOURCES}
   ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/main.c
   )
 
-set(INCLUDES_COMMON
-  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Include/
-  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/CMSIS/Device/ST/STM32F4xx/Include/
-  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Inc/
+target_compile_options(${PROJ} PRIVATE
+  ${CPU}
+  ${THUMB}
+  ${FPU}
+  ${FLOAT-ABI}
+  ${OPTIMIZE}
+  ${DEBUG}
+  -ffunction-sections
+  -fdata-sections
+  -Wall
+  -T${PROJECT_CURRENT_LIST_DIR}/STM32F405RGTx_FLASH.ld
+  --specs=rdimon.specs
+  -Wl,--gc-sections
   )
 
 target_include_directories(${PROJ} PRIVATE
   ${INCLUDES_COMMON}
   ${FREERTOS_INCLUDE_DIRS}
-  ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc/
+  ${CMAKE_CURRENT_LIST_DIR}/Core/Inc/
   )
 
 target_compile_definitions(${PROJ} PRIVATE
@@ -86,7 +102,7 @@ target_compile_definitions(${PROJ} PRIVATE
   )
 
 target_link_libraries(${PROJ}
-  -lm -lnosys FreeRTOS
+  -lm -lnosys ${FreeRTOS_LIB}
   )
 
 add_custom_target(${PROJ}.bin ALL
