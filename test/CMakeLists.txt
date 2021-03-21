@@ -48,28 +48,26 @@ set(TEST_SOURCES
   ${C_SOURCES_Core}
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_test_c.c
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/main.cpp
+  ${ASM_SOURCES_Core}
   )
 
-set(TEST_ASM_SOURCES
-  ${CMAKE_SOURCE_DIR}/startup_stm32f405xx.s
-  )
-
-set_property(SOURCE
-  ${CMAKE_SOURCE_DIR}/startup_stm32f405xx.s PROPERTY LANGUAGE C
-  )
+foreach(TEST_SOURCE ${TEST_SOURCES})
+    set_property(SOURCE
+      ${TEST_SOURCE} PROPERTY LANGUAGE CXX)
+endforeach()
 
 add_executable(${PROJ}-test
-  ${TEST_ASM_SOURCES}
   ${TEST_SOURCES}
   ${CPPUTEST_SOURCES}
+  ${FREERTOS_SOURCES}
   )
 
 target_include_directories(${PROJ}-test PRIVATE
   ${INCLUDES_COMMON}
   ${INCLUDES_CPPUTEST}
   ${CMAKE_CURRENT_LIST_DIR}/Inc/
-  ${CMAKE_SOURCE_DIR}/Core/Inc/
-  ${FREERTOS_INCLUDES}
+  ${PROJECT_SOURCE_DIR}/Core/Inc/
+  ${FREERTOS_INCLUDE_DIRS}
   )
 
 target_compile_definitions(${PROJ}-test PRIVATE
