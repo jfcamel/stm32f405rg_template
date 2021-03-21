@@ -53,7 +53,7 @@ set(TEST_SOURCES
 
 foreach(TEST_SOURCE ${TEST_SOURCES})
     set_property(SOURCE
-      ${TEST_SOURCE} PROPERTY LANGUAGE CXX)
+      ${TEST_SOURCE} PROPERTY LANGUAGE C)
 endforeach()
 
 add_executable(${PROJ}-test

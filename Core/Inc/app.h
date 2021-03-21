@@ -8,7 +8,7 @@
 extern "C" {
 #endif // __cplusplus
 
-  void app_init(void);
+  uint16_t app_init(void);
   void app_process(void);
 
   /* FreeRTOS Related */
