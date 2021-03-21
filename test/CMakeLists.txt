@@ -35,7 +35,8 @@ SET(_CPPUTEST_SOURCES
 
 SET(CPPUTEST_SOURCES
   ${_CPPUTEST_SOURCES}
-  $ENV{CPPUTEST_HOME}/src/Platforms/GccNoStdC/UtestPlatform.cpp
+  # $ENV{CPPUTEST_HOME}/src/Platforms/GccNoStdC/UtestPlatform.cpp
+  $ENV{CPPUTEST_HOME}/src/Platforms/Iar/UtestPlatform.cpp
   )
 
 SET(INCLUDES_CPPUTEST
