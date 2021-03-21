@@ -17,27 +17,28 @@ foreach(CXX_SOURCES_static_task ${CXX_SOURCES_static_tasks})
   set_property(SOURCE ${CXX_SOURCES_static_task} PROPERTY LANGUAGE CXX)
 endforeach()
 
-set(DEFINITIONS_static_tasks
-  ${DEFINITIONS_COMMON}
-  )
+FindFreeRTOS(COMPILER GCC PROCESSOR ARM_CM4F)
 
 add_executable(${EXECNAME}
   ${C_SOURCES_COMMON}
-
+  ${FREERTOS_SOURCES}
   ${CXX_SOURCES_static_tasks}
   )
 
 target_include_directories(${EXECNAME} PRIVATE
   ${INCLUDES_COMMON}
-  ${FREERTOS_INCLUDES}
+  ${FREERTOS_INCLUDE_DIRS}
   ${CMAKE_CURRENT_LIST_DIR}/Inc/
   )
 
 target_compile_definitions(${EXECNAME} PRIVATE
   ${DEFINITIONS_COMMON}
-  ${DEFINITIONS_static_tasks}
-  -DconfigTICK_RATE_HZ=1000
-  -DconfigIDLE_SHOULD_YIELD=0
+  configSUPPORT_STATIC_ALLOCATION=1
+  configSUPPORT_DYNAMIC_ALLOCATION=0
+  configUSE_PREEMPTION=1
+  configUSE_IDLE_HOOK=1
+  configUSE_TICK_HOOK=1
+  configIDLE_SHOULD_YIELD=1
   )
 
 target_link_libraries(${EXECNAME}
@@ -50,6 +51,3 @@ add_custom_target(${EXECNAME}.bin ALL
   )
 
 add_dependencies(${EXECNAME}.bin ${EXECNAME})
-
-message(STATUS "CMAKE_CXX_LINK_FLAGS = ${CMAKE_CXX_LINK_FLAGS}")
-message(STATUS "CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")

@@ -7,12 +7,23 @@
 #include "task.h"
 
 #include "main.h"
+#include "static_tasks.h"
 
+#define STACK_SIZE_IDLE 200
+StackType_t idleTaskStack[ STACK_SIZE_IDLE ];
+StaticTask_t idleTaskBuffer;
 
-// void vApplicationTickHook( void )
-// {
-//   printf(".");
-// }
+void vApplicationInit(void)
+{
+  printf("configTICK_RATE_HZ=%d\n", (uint16_t)configTICK_RATE_HZ);
+  printf("configCPU_CLOCK_HZ=%ld\n", (uint32_t)configCPU_CLOCK_HZ);
+  printf("configUSE_PREEMPTION=%d\n", (uint16_t)configUSE_PREEMPTION);
+}
+
+void vApplicationTickHook( void )
+{
+  // printf(".");
+}
 
 void vApplicationMallocFailedHook( void )
 {
@@ -22,15 +33,21 @@ void vApplicationMallocFailedHook( void )
 
 void vApplicationIdleHook( void )
 {
+  // printf(".");
 }
 
-// void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
-// {
-//   taskDISABLE_INTERRUPTS();
-//   for( ;; );
-// }
+void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName )
+{
+  taskDISABLE_INTERRUPTS();
+  for( ;; );
+}
 
-
+void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer, StackType_t ** ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize)
+{
+  *ppxIdleTaskTCBBuffer = (StaticTask_t*)&idleTaskBuffer;
+  *ppxIdleTaskStackBuffer = (StackType_t*)idleTaskStack;
+  *pulIdleTaskStackSize = STACK_SIZE_IDLE;
+}
 
 void SystemClock_Config(void)
 {
@@ -74,6 +91,11 @@ int main(void)
 
   SystemClock_Config();
 
+  vApplicationInit();
+
+  task_init_tasks();
+
+  vTaskStartScheduler();
   while (1)
   {
     printf("hello world\n");

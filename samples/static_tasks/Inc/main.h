@@ -22,7 +22,13 @@ extern "C" {
 
 
   void SystemClock_Config(void);
-  
+  void vApplicationInit(void);
+  void vApplicationTickHook( void );
+  void vApplicationIdleHook( void );
+  void vApplicationMallocFailedHook( void );
+  void vApplicationStackOverflowHook( TaskHandle_t pxTask, char *pcTaskName );
+  void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer, StackType_t ** ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
+
 #ifdef __cplusplus
 }
 #endif
