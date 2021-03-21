@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 get_filename_component(PROJ ${CMAKE_CURRENT_LIST_DIR} NAME)
 project(${PROJ})
-
-INCLUDE_DIRECTORIES(Drivers/FreeRTOS)
+project(${PROJ} LANGUAGES C CXX)
 
 SET(PREFIX arm-none-eabi)
 SET(CMAKE_C_COMPILER ${PREFIX}-gcc)
