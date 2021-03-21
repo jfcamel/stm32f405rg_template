@@ -1,7 +1,41 @@
 # @file
-# FindFreeRTOS.cmaks
+#
+#[=======================================================================[.rst:
+FindFreeRTOS
+------------
 
-if (UNIX)
+Find FreeRTOS header files and source files.
+
+Result VARIABLES
+^^^^^^^^^^^^^^^^
+
+This module will set the following variables in your project
+
+``FREERTOS_FOUND``
+FreeRTOS is found and ready to build.
+``FREERTOS_INCLUDE_DIRS``
+PATH for FreeRTOS Header
+``FREERTOS_SOURCES``
+PATH for FreeRTOS Sources
+``FREERTOS_VERSION
+VERSION for FreeRTOS
+
+#]=======================================================================]
+
+# FindFreeRTOS.cmaks
+# COMPILER PROCESSOR
+
+CMAKE_MINIMUM_REQUIRED(VERSION 3.17)
+
+function(FindFreeRTOS)
+  set(optional)
+  set(oneValue COMPILER PROCESSOR HEAP)
+  set(multiValues)
+  message(STATUS "ARGN = ${ARGN}")
+  cmake_parse_arguments(FREERTOS "${optional}" "${oneValue}" "${multiValues}" ${ARGN})
+
+  message(STATUS "compiler=${FREERTOS_COMPILER}, processor=${FREERTOS_PROCESSOR}, heap=${FREERTOS_HEAP}" )
+
   set(FreeRTOS_FOUND FALSE)
   set(FreeRTOS_INCLUDE_DIRS "")
   set(FreeRTOS_LIBRARIES "")
@@ -41,67 +75,64 @@ if (UNIX)
     FreeRTOS/Source
     )
 
-  set(FreeRTOS_LIB FreeRTOS_${FREERTOS_VERSION})
+  find_path( FreeRTOS_PORTABLE_INCLUDE_PATH
+    NAMES
+    portmacro.h
+    PATHS
+    ${CMAKE_SOURCE_DIR}
+    $ENV{FREERTOS_ROOT}
+    PATH_SUFFIXES
+    FreeRTOS/Source/portable/${FREERTOS_COMPILER}/${FREERTOS_PROCESSOR}
+    )
 
-  function(FindFreeRTOS)
-    add_library(${FreeRTOS_LIB} INTERFACE IMPORTED)
-    target_include_directories(${FreeRTOS_LIB} INTERFACE
+  if (FreeRTOS_PORTABLE_INCLUDE_PATH STREQUAL FreeRTOS_PORTABLE_INCLUDE_PATH-NOTFOUND)
+    message(FATAL_ERROR "FreeRTOS portable headers DID NOT FOUND")
+  endif()
+
+  message(STATUS "FreeRTOS_HEADER is ${FreeRTOS_HEADER}")
+  message(STATUS "FreeRTOS_CONFIG_HEADER is ${FreeRTOS_CONFIG_HEADER}")
+  message(STATUS "FreeRTOS_INCLUDE_PATH is ${FreeRTOS_INCLUDE_PATH}")
+  message(STATUS "FreeRTOS_PORTABLE_INCLUDE_PATH is ${FreeRTOS_PORTABLE_INCLUDE_PATH}")
+  message(STATUS "FreeRTOS_SOURCE_PATH is ${FreeRTOS_SOURCE_PATH}")
+  message(STATUS "FREERTOS_HEAP is ${FREERTOS_HEAP}")
+  message(STATUS "FREERTOS_ROOT is $ENV{FREERTOS_ROOT}")
+
+  set(FREERTOS_SOURCES_INTERNAL
+    ${FreeRTOS_SOURCE_PATH}/list.c
+    ${FreeRTOS_SOURCE_PATH}/tasks.c
+    ${FreeRTOS_SOURCE_PATH}/portable/${FREERTOS_COMPILER}/${FREERTOS_PROCESSOR}/port.c
+    ${FreeRTOS_SOURCE_PATH}/queue.c
+    ${FreeRTOS_SOURCE_PATH}/stream_buffer.c
+    ${FreeRTOS_SOURCE_PATH}/timers.c
+    ${FreeRTOS_SOURCE_PATH}/event_groups.c
+    ${FreeRTOS_SOURCE_PATH}/croutine.c
+  )
+  if (FREERTOS_HEAP)
+    set(FREERTOS_SOURCES_INTERNAL
+      ${FREERTOS_SOURCES_INTERNAL}
+      ${FreeRTOS_SOURCE_PATH}/portable/MemMang/${FREERTOS_HEAP}.c
+    )
+  endif()
+
+  function(FREERTOS_CREATE_LIB TARGET DEFINITIONS)
+    add_library(${TARGET}_LIB INTERFACE)
+    target_include_directories(${TARGET}_LIB PUBLIC
+      ${CMAKE_CURRENT_LIST_DIR}
       ${FreeRTOS_INCLUDE_PATH}
+      ${FreeRTOS_PORTABLE_INCLUDE_PATH}
+      )
+    target_sources(${TARGET}_LIB PUBLIC
+      ${FREERTOS_SOURCES_INTERNAL}
       )
   endfunction()
 
-endif()
-
-message(STATUS "FreeRTOS_HEADER is ${FreeRTOS_HEADER}")
-message(STATUS "FreeRTOS_CONFIG_HEADER is ${FreeRTOS_CONFIG_HEADER}")
-message(STATUS "FreeRTOS_INCLUDE_PATH is ${FreeRTOS_INCLUDE_PATH}")
-message(STATUS "FreeRTOS_SOURCE_PATH is ${FreeRTOS_SOURCE_PATH}")
-message(STATUS "FREERTOS_ROOT is $ENV{FREERTOS_ROOT}")
-
-
-function(add_freertos_dependency)
-  set(optional EXTRA)
-  set(oneValue COMPILER PROCESSOR)
-  set(multiValues DEFINITIONS)
-  cmake_parse_arguments(FREERTOS "${optional}" "${oneValue}" "${multiValues}" ${ARGN})
-
-  set(FREERTOS_COMPILER ${FREERTOS_COMPILER}) # "GCC")
-  set(FREERTOS_PROCESSOR ${FREERTOS_PROCESSOR}) # "ARM_CM4F")
-  set(FREERTOS_HEAP_SOURCE  ${FREERTOS_HEAP}) #"heap_1")
-
   set(FREERTOS_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Source/list.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Source/tasks.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Source/portable/${FREERTOS_COMPILER}/${FREERTOS_PROCESSOR}/port.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Source/queue.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Source/stream_buffer.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Source/timers.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Source/event_groups.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Source/croutine.c
+    ${FREERTOS_SOURCES_INTERNAL}
     PARENT_SCOPE)
-
-  if (${FREERTOS_HEAP})
-    set(FREERTOS_SOURCES
-      ${FREERTOS_SOURCES}
-      ${CMAKE_CURRENT_SOURCE_DIR}/Source/portable/MemMang/${FREERTOS_HEAP_SOURCE}.c
-      PARENT_SCOPE)
-  endif()
 
   set(FREERTOS_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}/Source/include/
-    ${CMAKE_CURRENT_SOURCE_DIR}/Source/portable/${FREERTOS_COMPILER}/${FREERTOS_ARCH}/
+    ${FreeRTOS_INCLUDE_PATH}
+    ${FreeRTOS_PORTABLE_INCLUDE_PATH}
     PARENT_SCOPE)
-
-  # set(FREERTOS_DEFINITIONS
-  #   configUSE_PORT_OPTIMIZED_TASK_SELECTION=$<BOOL:freertos_use_port_optimized_task_selection>
-  #   configUSE_PREEMPTION=$<BOOL:freertos_use_preemption>
-  #   configUSE_IDLE_HOOK=$<BOOL:freertos_use_idle_hook>
-  #   configUSE_IDLE_HOOK=$<BOOL:freertos_use_idle_hook>
-  #   configUSE_TICK_HOOK=$<BOOL:freertos_use_tick_hook>
-  #   configUSE_TICK_RATE_HZ=1000
-  #   configIDLE_SHOULD_YIELD=1
-  #   configSUPPORT_STATIC_ALLCATION=$<BOOL:freertos_support_static_allocation>
-  #   configSUPPORT_DYNAMIC_ALLOCATION=$<BOOL:freertos_support_dynamic_allocation>
-  #   PARENT_SCOPE)
 
 endfunction()
