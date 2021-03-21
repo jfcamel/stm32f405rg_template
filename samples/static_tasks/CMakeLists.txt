@@ -6,6 +6,7 @@ set(CMAKE_CXX_LINK_FLAGS "${CMAKE_C_FLAGS} -T${CMAKE_CURRENT_LIST_DIR}/STM32F405
 
 set(CXX_SOURCES_static_tasks
   ${C_SOURCES_COMMON}
+  ${CMAKE_CURRENT_LIST_DIR}/Src/static_tasks.c
   ${CMAKE_CURRENT_LIST_DIR}/Src/stm32f4xx_it.c
   ${CMAKE_CURRENT_LIST_DIR}/Src/system_stm32f4xx.c
   ${CMAKE_CURRENT_LIST_DIR}/Src/main.cpp
