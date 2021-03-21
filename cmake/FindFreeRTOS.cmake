@@ -62,6 +62,27 @@ function(FindFreeRTOS)
     FreeRTOS/Source/include
     )
 
+  file(GLOB _FreeRTOS_TASK_HEADER "${FreeRTOS_INCLUDE_PATH}/task.h")
+  if (NOT EXISTS ${_FreeRTOS_TASK_HEADER})
+    message(FATAL_ERROR "task.h DID NOT FOUND")
+  endif()
+  file(STRINGS "${_FreeRTOS_TASK_HEADER}"
+    _FreeRTOS_VER_MAJOR REGEX "^#define[\t ]+tskKERNEL_VERSION_MAJOR[\t ]+.*")
+  string(REGEX REPLACE "^#define[\t ]+tskKERNEL_VERSION_MAJOR[\t ]+([0-9].*)"
+    "\\1" FREERTOS_VER_MAJOR "${_FreeRTOS_VER_MAJOR}")
+  file(STRINGS "${_FreeRTOS_TASK_HEADER}"
+    _FreeRTOS_VER_MINOR REGEX "^#define[\t ]+tskKERNEL_VERSION_MINOR[\t ]+.*")
+  string(REGEX REPLACE "^#define[\t ]+tskKERNEL_VERSION_MINOR[\t ]+([0-9].*)"
+    "\\1" FREERTOS_VER_MINOR "${_FreeRTOS_VER_MINOR}")
+  file(STRINGS "${_FreeRTOS_TASK_HEADER}"
+    _FreeRTOS_VER_BUILD REGEX "^#define[\t ]+tskKERNEL_VERSION_BUILD[\t ]+.*")
+  string(REGEX REPLACE "^#define[\t ]+tskKERNEL_VERSION_BUILD[\t ]+([0-9].*)"
+    "\\1" FREERTOS_VER_BUILD "${_FreeRTOS_VER_BUILD}")
+  message(TRACE "version = ${FREERTOS_VER_MAJOR}.${FREERTOS_VER_MINOR}.${FREERTOS_VER_BUILD}")
+  set(FREERTOS_VERSION
+    ${FREERTOS_VER_MAJOR}.${FREERTOS_VER_MINOR}.${FREERTOS_VER_BUILD}
+    PARENT_SCOPE)
+
   find_path( FreeRTOS_SOURCE_PATH
     NAMES
     tasks.c list.c queue.c stream_buffer.c timers.c c
