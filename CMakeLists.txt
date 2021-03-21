@@ -18,11 +18,6 @@ set(MCU "${CPU} ${THUMB} ${FPU} ${FLOAT-ABI}")
 set(DEBUG "-g3")
 set(OPTIMIZATION_LEVEL "-Os")
 
-set(CMAKE_C_FLAGS "${MCU} ${OPTIMIZATION_LEVEL} ${DEBUG} -ffunction-sections -fdata-sections -Wall")
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -fpermissive -fexceptions -fnon-call-exceptions -fno-rtti -fno-use-cxa-atexit -fno-common")
-# set(CMAKE_C_LINK_FLAGS "${CMAKE_C_FLAGS} -T${CMAKE_CURRENT_LIST_DIR}/STM32F405RGTx_FLASH.ld  --specs=nano.specs -Wl,--gc-sections")
-set(CMAKE_C_LINK_FLAGS "${CMAKE_C_FLAGS} -T${PROJECT_SOURCE_DIR}/STM32F405RGTx_FLASH.ld  --specs=rdimon.specs -Wl,--gc-sections")
-
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindFreeRTOS.cmake)
 FindFreeRTOS(COMPILER GCC PROCESSOR ARM_CM4F HEAP heap_1)
 
@@ -33,20 +28,32 @@ set(C_SOURCES_COMMON
   ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_exti.c
   )
 
+set(C_FLAGS_OPTIONS
+  PRIVATE ${CPU}
+  PRIVATE ${THUMB}
+  PRIVATE ${FPU}
+  PRIVATE ${FLOAT-ABI}
+  PRIVATE ${OPTIMIZATION_LEVEL}
+  PRIVATE ${DEBUG}
+  PRIVATE -ffunction-sections
+  PRIVATE -fdata-sections
+  PRIVATE -Wall
+  )
+
 set(DEFINITIONS_COMMON
-  -DUSE_FULL_LL_DRIVER
-  -DHSE_VALUE=16000000
-  -DHSE_STARTUP_TIMEOUT=100
-  -DLSE_STARTUP_TIMEOUT=5000
-  -DLSE_VALUE=32768
-  -DEXTERNAL_CLOCK_VALUE=12288000
-  -DHSI_VALUE=16000000
-  -DLSI_VALUE=32000
-  -DVDD_VALUE=3300
-  -DPREFETCH_ENABLE=1
-  -DINSTRUCTION_CACHE_ENABLE=1
-  -DDATA_CACHE_ENABLE=1
-  -DSTM32F405xx
+  USE_FULL_LL_DRIVER
+  HSE_VALUE=16000000
+  HSE_STARTUP_TIMEOUT=100
+  LSE_STARTUP_TIMEOUT=5000
+  LSE_VALUE=32768
+  EXTERNAL_CLOCK_VALUE=12288000
+  HSI_VALUE=16000000
+  LSI_VALUE=32000
+  VDD_VALUE=3300
+  PREFETCH_ENABLE=1
+  INSTRUCTION_CACHE_ENABLE=1
+  DATA_CACHE_ENABLE=1
+  STM32F405xx
   )
 
 set(INCLUDES_COMMON
@@ -76,21 +83,6 @@ add_executable(${PROJ}
   ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/main.c
   )
 
-target_compile_options(${PROJ} PRIVATE
-  ${CPU}
-  ${THUMB}
-  ${FPU}
-  ${FLOAT-ABI}
-  ${OPTIMIZE}
-  ${DEBUG}
-  -ffunction-sections
-  -fdata-sections
-  -Wall
-  -T${PROJECT_CURRENT_LIST_DIR}/STM32F405RGTx_FLASH.ld
-  --specs=rdimon.specs
-  -Wl,--gc-sections
-  )
-
 target_include_directories(${PROJ} PRIVATE
   ${INCLUDES_COMMON}
   ${FREERTOS_INCLUDE_DIRS}
@@ -101,8 +93,19 @@ target_compile_definitions(${PROJ} PRIVATE
   ${DEFINITIONS_COMMON}
   )
 
+target_compile_options(${PROJ}
+  ${C_FLAGS_OPTIONS}
+  )
+
+target_link_options(${PROJ}
+  ${C_FLAGS_OPTIONS}
+  PRIVATE -T${CMAKE_CURRENT_LIST_DIR}/STM32F405RGTx_FLASH.ld
+  PRIVATE --specs=rdimon.specs
+  PRIVATE -Wl,--gc-sections
+  )
+
 target_link_libraries(${PROJ}
-  -lm -lnosys ${FreeRTOS_LIB}
+  -lm -lnosys
   )
 
 add_custom_target(${PROJ}.bin ALL

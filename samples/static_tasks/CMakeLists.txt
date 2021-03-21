@@ -1,9 +1,6 @@
 get_filename_component(EXECNAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 string(REPLACE " " "_" EXECNAME ${EXECNAME})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -fpermissive -fexceptions -fnon-call-exceptions -fno-rtti -fno-use-cxa-atexit -fno-common")
-set(CMAKE_CXX_LINK_FLAGS "${CMAKE_C_FLAGS} -T${CMAKE_CURRENT_LIST_DIR}/STM32F405RGTx_FLASH.ld  --specs=rdimon.specs -Wl,--gc-sections")
-
 set(CXX_SOURCES_static_tasks
   ${C_SOURCES_COMMON}
   ${CMAKE_CURRENT_LIST_DIR}/Src/static_tasks.c
@@ -23,6 +20,17 @@ add_executable(${EXECNAME}
   ${C_SOURCES_COMMON}
   ${FREERTOS_SOURCES}
   ${CXX_SOURCES_static_tasks}
+  )
+
+target_compile_options(${EXECNAME}
+  ${C_FLAGS_OPTIONS}
+  )
+
+target_link_options(${EXECNAME}
+  ${C_FLAGS_OPTIONS}
+  PRIVATE -T${CMAKE_CURRENT_LIST_DIR}/STM32F405RGTx_FLASH.ld
+  PRIVATE --specs=rdimon.specs
+  PRIVATE -Wl,--gc-sections
   )
 
 target_include_directories(${EXECNAME} PRIVATE

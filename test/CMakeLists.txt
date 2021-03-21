@@ -74,16 +74,32 @@ target_compile_definitions(${PROJ}-test PRIVATE
   ${DEFINITIONS_COMMON}
   )
 
+target_compile_options(${PROJ}-test
+  ${C_FLAGS_OPTIONS}
+
+  PRIVATE -fexceptions
+  PRIVATE -fnon-call-exceptions
+  PRIVATE -fno-common
+  # PRIVATE -fpermissive
+  # PRIVATE -fno-rtti
+  # PRIVATE -fno-use-cxa-atexit
+  )
+
+target_compile_features(${PROJ}-test
+  PRIVATE cxx_std_11
+  )
+
 target_link_libraries(${PROJ}-test
   -lm -lnosys
   )
 
 target_link_options(${PROJ}-test
-  PRIVATE "-T${CMAKE_SOURCE_DIR}/STM32F405RGTx_FLASH.ld"
-  PRIVATE "--specs=rdimon.specs"
-  PRIVATE "-u _scan_float"
-  PRIVATE "-u _printf_float"
-  PRIVATE "-Wl,--gc-sections")
+  ${C_FLAGS_OPTIONS}
+
+  PRIVATE -T${CMAKE_CURRENT_SOURCE_DIR}/../STM32F405RGTx_FLASH.ld
+  PRIVATE --specs=rdimon.specs
+  PRIVATE --specs=nano.specs
+  PRIVATE -Wl,--gc-sections)
 
 add_custom_target(${PROJ}-test.bin ALL
   COMMAND
