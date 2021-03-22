@@ -36,7 +36,7 @@ function(FindFreeRTOS)
   cmake_parse_arguments(FREERTOS "${optional}" "${oneValue}" "${multiValues}" ${ARGN})
   message(TRACE "compiler=${FREERTOS_COMPILER}, processor=${FREERTOS_PROCESSOR}, heap=${FREERTOS_HEAP}" )
 
-  # set(CMAKE_MESSAGE_LOG_LEVEL INFO)
+  # set(CMAKE_MESSAGE_LOG_LEVEL TRACE)
   set(FREERTOS_FOUND FALSE)
   set(FREERTOS_INCLUDE_DIRS "")
 
@@ -50,7 +50,7 @@ function(FindFreeRTOS)
     )
 
   if (FreeRTOS_HEADER STREQUAL FreeRTOS_HEADER-NOTFOUND)
-    message(FATAL_ERROR "FreeRTOS DID NOT FOUND")
+    message(WARNING "FreeRTOS DID NOT FOUND")
   endif()
 
   find_path( FreeRTOS_INCLUDE_PATH NAMES FreeRTOS.h
@@ -64,7 +64,7 @@ function(FindFreeRTOS)
 
   file(GLOB _FreeRTOS_TASK_HEADER "${FreeRTOS_INCLUDE_PATH}/task.h")
   if (NOT EXISTS ${_FreeRTOS_TASK_HEADER})
-    message(FATAL_ERROR "task.h DID NOT FOUND")
+    message(WARNING "task.h DID NOT FOUND")
   endif()
 
   file(STRINGS "${_FreeRTOS_TASK_HEADER}"
@@ -107,12 +107,12 @@ function(FindFreeRTOS)
     )
 
   if (FreeRTOS_PORTABLE_INCLUDE_PATH STREQUAL FreeRTOS_PORTABLE_INCLUDE_PATH-NOTFOUND)
-    message(FATAL_ERROR "FreeRTOS portable headers DID NOT FOUND")
+    message(WARNING "FreeRTOS portable headers DID NOT FOUND")
   endif()
 
   message(TRACE "FreeRTOS_HEADER is ${FreeRTOS_HEADER}")
-  message(TRACE "FreeRTOS_CONFIG_HEADER is ${FreeRTOS_CONFIG_HEADER}")
   message(TRACE "FreeRTOS_INCLUDE_PATH is ${FreeRTOS_INCLUDE_PATH}")
+  message(TRACE "FreeRTOS_CONFIG_PATH is ${FreeRTOS_CONFIG_PATH}")
   message(TRACE "FreeRTOS_PORTABLE_INCLUDE_PATH is ${FreeRTOS_PORTABLE_INCLUDE_PATH}")
   message(TRACE "FreeRTOS_SOURCE_PATH is ${FreeRTOS_SOURCE_PATH}")
   message(TRACE "FREERTOS_HEAP is ${FREERTOS_HEAP}")
