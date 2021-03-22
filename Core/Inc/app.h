@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __APP_H__
+#define __APP_H__
 
 #include <stdint.h>
 #include "FreeRTOS.h"
@@ -48,3 +49,4 @@ extern "C" {
 }
 #endif // __cplusplus
   
+#endif // __APP_H__

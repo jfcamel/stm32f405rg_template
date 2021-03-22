@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __STM32F4XX_IT_H__
+#define __STM32F4XX_IT_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,3 +18,4 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+#endif // __STM32F4XX_IT_H__

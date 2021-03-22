@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __STATIC_TASKS_H__
+#define __STATIC_TASKS_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -12,3 +13,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif // __cplusplus
+
+#endif // __STATIC_TASKS_H__

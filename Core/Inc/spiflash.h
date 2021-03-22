@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __SPIFLASH_H__
+#define __SPIFLASH_H__
 
 #include <stdint.h>
 
@@ -18,3 +19,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif // __cplusplus
+
+#endif // __SPIFLASH_H__
