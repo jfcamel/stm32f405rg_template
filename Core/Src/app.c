@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 
-void app_init(void) {
+uint16_t app_init(void) {
   printf("app initialization started\n");
   xTaskCreate((TaskFunction_t)app_process,
               "app task",
@@ -17,6 +17,7 @@ void app_init(void) {
     );
 
   printf("app initialized\n");
+  return 0;
 }
 
 void app_process(void) {

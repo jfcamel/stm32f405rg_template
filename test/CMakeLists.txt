@@ -35,7 +35,8 @@ SET(_CPPUTEST_SOURCES
 
 SET(CPPUTEST_SOURCES
   ${_CPPUTEST_SOURCES}
-  $ENV{CPPUTEST_HOME}/src/Platforms/GccNoStdC/UtestPlatform.cpp
+  # $ENV{CPPUTEST_HOME}/src/Platforms/GccNoStdC/UtestPlatform.cpp
+  $ENV{CPPUTEST_HOME}/src/Platforms/Iar/UtestPlatform.cpp
   )
 
 SET(INCLUDES_CPPUTEST
@@ -47,32 +48,45 @@ set(TEST_SOURCES
   ${C_SOURCES_Core}
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_test_c.c
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/main.cpp
+  ${ASM_SOURCES_Core}
   )
 
-set(TEST_ASM_SOURCES
-  ${CMAKE_SOURCE_DIR}/startup_stm32f405xx.s
-  )
-
-set_property(SOURCE
-  ${CMAKE_SOURCE_DIR}/startup_stm32f405xx.s PROPERTY LANGUAGE C
-  )
+foreach(TEST_SOURCE ${TEST_SOURCES})
+    set_property(SOURCE
+      ${TEST_SOURCE} PROPERTY LANGUAGE C)
+endforeach()
 
 add_executable(${PROJ}-test
-  ${TEST_ASM_SOURCES}
   ${TEST_SOURCES}
   ${CPPUTEST_SOURCES}
+  ${FREERTOS_SOURCES}
   )
 
 target_include_directories(${PROJ}-test PRIVATE
   ${INCLUDES_COMMON}
   ${INCLUDES_CPPUTEST}
   ${CMAKE_CURRENT_LIST_DIR}/Inc/
-  ${CMAKE_SOURCE_DIR}/Core/Inc/
-  ${FREERTOS_INCLUDES}
+  ${PROJECT_SOURCE_DIR}/Core/Inc/
+  ${FREERTOS_INCLUDE_DIRS}
   )
 
 target_compile_definitions(${PROJ}-test PRIVATE
   ${DEFINITIONS_COMMON}
+  )
+
+target_compile_options(${PROJ}-test
+  ${C_FLAGS_OPTIONS}
+
+  PRIVATE -fexceptions
+  PRIVATE -fnon-call-exceptions
+  PRIVATE -fno-common
+  # PRIVATE -fpermissive
+  # PRIVATE -fno-rtti
+  # PRIVATE -fno-use-cxa-atexit
+  )
+
+target_compile_features(${PROJ}-test
+  PRIVATE cxx_std_11
   )
 
 target_link_libraries(${PROJ}-test
@@ -80,11 +94,12 @@ target_link_libraries(${PROJ}-test
   )
 
 target_link_options(${PROJ}-test
-  PRIVATE "-T${CMAKE_SOURCE_DIR}/STM32F405RGTx_FLASH.ld"
-  PRIVATE "--specs=rdimon.specs"
-  PRIVATE "-u _scan_float"
-  PRIVATE "-u _printf_float"
-  PRIVATE "-Wl,--gc-sections")
+  ${C_FLAGS_OPTIONS}
+
+  PRIVATE -T${CMAKE_CURRENT_SOURCE_DIR}/../STM32F405RGTx_FLASH.ld
+  PRIVATE --specs=rdimon.specs
+  PRIVATE --specs=nano.specs
+  PRIVATE -Wl,--gc-sections)
 
 add_custom_target(${PROJ}-test.bin ALL
   COMMAND

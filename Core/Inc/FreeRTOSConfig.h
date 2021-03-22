@@ -4,7 +4,8 @@
 #include <stdint.h>
 extern uint32_t SystemCoreClock;
 
-#ifndef configUSE_PORT_OPTIMISED
+
+#ifndef configUSE_PORT_OPTIMISED_TASK_SELECTION
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
 #endif
 #ifndef configUSE_PREEMPTION
@@ -31,13 +32,13 @@ extern uint32_t SystemCoreClock;
 #ifndef configTOTAL_HEAP_SIZE
 #define configTOTAL_HEAP_SIZE			( ( size_t ) ( 75 * 1024 ) )
 #endif
-#ifndef configMAX_TASK_NAME
+#ifndef configMAX_TASK_NAME_LEN
 #define configMAX_TASK_NAME_LEN			( 10 )
 #endif
 #ifndef configUSE_TRACE_FACILITY
 #define configUSE_TRACE_FACILITY		1
 #endif
-#ifndef configUSE_16_BIT
+#ifndef configUSE_16_BIT_TICKS
 #define configUSE_16_BIT_TICKS			0
 #endif
 #ifndef configIDLE_SHOULD_YIELD
@@ -49,22 +50,22 @@ extern uint32_t SystemCoreClock;
 #ifndef configQUEUE_REGISTRY_SIZE
 #define configQUEUE_REGISTRY_SIZE		8
 #endif
-#ifndef configCHECK_FOR_STACK
+#ifndef configCHECK_FOR_STACK_OVERFLOW
 #define configCHECK_FOR_STACK_OVERFLOW	2
 #endif
 #ifndef configUSE_RECURSIVE_MUTEXES
 #define configUSE_RECURSIVE_MUTEXES		1
 #endif
-#ifndef configUSE_MALLOC_FAILED
+#ifndef configUSE_MALLOC_FAILED_HOOK
 #define configUSE_MALLOC_FAILED_HOOK	1
 #endif
-#ifndef configUSE_APPLICATION_TASK
+#ifndef configUSE_APPLICATION_TASK_TAG
 #define configUSE_APPLICATION_TASK_TAG	0
 #endif
 #ifndef configUSE_COUNTING_SEMAPHORES
 #define configUSE_COUNTING_SEMAPHORES	1
 #endif
-#ifndef configGENERATE_RUN_TIME
+#ifndef configGENERATE_RUN_TIME_STATS
 #define configGENERATE_RUN_TIME_STATS	0
 #endif
 #ifndef configSUPPORT_STATIC_ALLOCATION
@@ -78,7 +79,7 @@ extern uint32_t SystemCoreClock;
 #ifndef configUSE_CO_ROUTINES
 #define configUSE_CO_ROUTINES 		0
 #endif
-#ifndef configMAX_CO_ROUTINE
+#ifndef configMAX_CO_ROUTINE_PRIORITIES
 #define configMAX_CO_ROUTINE_PRIORITIES ( 2 )
 #endif
 
