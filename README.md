@@ -43,3 +43,31 @@ Target architecture is "STM32F405RG" which is
 - Debug options -g3
 - Optimize options -Os
 - Default rdimon.specs is used
+
+## How to build project
+
+To build this project, FreeRTOS & CppUTest are needed.
+
+[FreeRTOS](https://www.freertos.org/)
+
+[CppUTest](http://cpputest.github.io/)
+
+
+Please download FreeRTOS source and CppUTest Source.
+
+To specify the directory where cpputest is placed, run the command below:
+
+```
+user $ export FREERTOS_ROOT=/home/${USER}/${FREERTOS_SOURCES}/
+# ex.
+# /home/${USER}/Downloads/FreeRTOSv202012.00/
+
+user $ export CPPUTEST_HOME=/home/${USER}/${CPPUTEST_SOURCES}/
+```
+
+Then, build with ordinary way
+
+```
+user $ mkdir build && cd build
+user $ cmake .. && make
+```
