@@ -62,6 +62,10 @@ function(FindFreeRTOS)
     FreeRTOS/Source/include
     )
 
+  find_path(FreeRTOS_CONFIG_PATH NAMES FreeRTOSConfig.h
+    PATHS
+    ${CMAKE_SOURCE_DIR})
+
   file(GLOB _FreeRTOS_TASK_HEADER "${FreeRTOS_INCLUDE_PATH}/task.h")
   if (NOT EXISTS ${_FreeRTOS_TASK_HEADER})
     message(WARNING "task.h DID NOT FOUND")
@@ -140,6 +144,7 @@ function(FindFreeRTOS)
 
   set(FREERTOS_INCLUDE_DIRS
     ${FreeRTOS_INCLUDE_PATH}
+    ${FreeRTOS_CONFIG_PATH}
     ${FreeRTOS_PORTABLE_INCLUDE_PATH}
     PARENT_SCOPE)
 
