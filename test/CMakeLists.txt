@@ -49,25 +49,25 @@ set(TEST_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_test_c.c
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/main.cpp
   ${ASM_SOURCES_Core}
+  ${FREERTOS_SOURCES}
   )
 
 foreach(TEST_SOURCE ${TEST_SOURCES})
-    set_property(SOURCE
-      ${TEST_SOURCE} PROPERTY LANGUAGE C)
+  set_property(SOURCE
+    ${TEST_SOURCE} PROPERTY LANGUAGE C)
 endforeach()
 
 add_executable(${PROJ}-test
   ${TEST_SOURCES}
   ${CPPUTEST_SOURCES}
-  ${FREERTOS_SOURCES}
   )
 
 target_include_directories(${PROJ}-test PRIVATE
   ${INCLUDES_COMMON}
   ${INCLUDES_CPPUTEST}
+  ${FREERTOS_INCLUDE_DIRS}
   ${CMAKE_CURRENT_LIST_DIR}/Inc/
   ${PROJECT_SOURCE_DIR}/Core/Inc/
-  ${FREERTOS_INCLUDE_DIRS}
   )
 
 target_compile_definitions(${PROJ}-test PRIVATE
@@ -77,9 +77,9 @@ target_compile_definitions(${PROJ}-test PRIVATE
 target_compile_options(${PROJ}-test
   ${C_FLAGS_OPTIONS}
 
-  PRIVATE -fexceptions
-  PRIVATE -fnon-call-exceptions
-  PRIVATE -fno-common
+  # PRIVATE -fexceptions
+  # PRIVATE -fnon-call-exceptions
+  # PRIVATE -fno-common
   # PRIVATE -fpermissive
   # PRIVATE -fno-rtti
   # PRIVATE -fno-use-cxa-atexit
@@ -96,7 +96,7 @@ target_link_libraries(${PROJ}-test
 target_link_options(${PROJ}-test
   ${C_FLAGS_OPTIONS}
 
-  PRIVATE -T${CMAKE_CURRENT_SOURCE_DIR}/../STM32F405RGTx_FLASH.ld
+  PRIVATE -T${CMAKE_CURRENT_LIST_DIR}/../STM32F405RGTx_FLASH.ld
   PRIVATE --specs=rdimon.specs
   PRIVATE --specs=nano.specs
   PRIVATE -Wl,--gc-sections)
