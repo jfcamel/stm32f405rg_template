@@ -35,7 +35,7 @@ SET(_CPPUTEST_SOURCES
 
 SET(CPPUTEST_SOURCES
   ${_CPPUTEST_SOURCES}
-  $ENV{CPPUTEST_HOME}/src/Platforms/Iar/UtestPlatform.cpp
+  $ENV{CPPUTEST_HOME}/src/Platforms/GccNoStdC/UtestPlatform.cpp
   )
 
 SET(INCLUDES_CPPUTEST
@@ -44,6 +44,7 @@ SET(INCLUDES_CPPUTEST
 
 set(TEST_SOURCES
   ${C_SOURCES_COMMON}
+  ${C_SOURCES_Core}
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_test_c.c
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/main.cpp
   )
@@ -66,6 +67,7 @@ target_include_directories(${PROJ}-test PRIVATE
   ${INCLUDES_COMMON}
   ${INCLUDES_CPPUTEST}
   ${CMAKE_CURRENT_LIST_DIR}/Inc/
+  ${CMAKE_SOURCE_DIR}/Core/Inc/
   ${FREERTOS_INCLUDES}
   )
 

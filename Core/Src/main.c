@@ -23,6 +23,11 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+
+#include "FreeRTOS.h"
+#include "task.h"
+
+#include "app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,7 +97,8 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
-
+  app_init();
+  vTaskStartScheduler();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -100,9 +106,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    
+
     /* USER CODE BEGIN 3 */
-    printf("Hello world\n");
   }
   /* USER CODE END 3 */
 }
@@ -143,7 +148,7 @@ void SystemClock_Config(void)
   {
 
   }
-  LL_Init1msTick(100000000);
+  // LL_Init1msTick(100000000);
   LL_SetSystemCoreClock(100000000);
 }
 

@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.10)
 get_filename_component(PROJ ${CMAKE_CURRENT_LIST_DIR} NAME)
 project(${PROJ})
 
+INCLUDE_DIRECTORIES(Drivers/FreeRTOS)
+
 SET(PREFIX arm-none-eabi)
 SET(CMAKE_C_COMPILER ${PREFIX}-gcc)
 SET(CMAKE_CXX_COMPILER ${PREFIX}-g++)
@@ -22,18 +24,18 @@ set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -std=c++11 -fpermissive -fexceptions -fnon
 # set(CMAKE_C_LINK_FLAGS "${CMAKE_C_FLAGS} -T${CMAKE_CURRENT_LIST_DIR}/STM32F405RGTx_FLASH.ld  --specs=nano.specs -Wl,--gc-sections")
 set(CMAKE_C_LINK_FLAGS "${CMAKE_C_FLAGS} -T${CMAKE_CURRENT_LIST_DIR}/STM32F405RGTx_FLASH.ld  --specs=rdimon.specs -Wl,--gc-sections")
 
+
 add_subdirectory("Drivers/FreeRTOS/")
 
 message(STATUS "FreeRTOS src = ${FREERTOS_SOURCES}")
 message(STATUS "FreeRTOS inc dir = ${FREERTOS_INCLUDES}")
 
 set(C_SOURCES_COMMON
-  ${CMAKE_SOURCE_DIR}/Core/Src/stm32f4xx_it.c
   ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_gpio.c
   ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_rcc.c
+  ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_spi.c
   ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_utils.c
   ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_exti.c
-  ${CMAKE_SOURCE_DIR}/Core/Src/system_stm32f4xx.c
   )
 
 set(DEFINITIONS_COMMON
@@ -52,12 +54,16 @@ set(DEFINITIONS_COMMON
   -DSTM32F405xx
   )
 
-set(C_SOURCES
+set(C_SOURCES_Core
   ${C_SOURCES_COMMON}
-  ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/main.c
+  ${FREERTOS_SOURCES}
+  ${CMAKE_SOURCE_DIR}/Core/Src/app.c
+  ${CMAKE_SOURCE_DIR}/Core/Src/spiflash.c
+  ${CMAKE_SOURCE_DIR}/Core/Src/stm32f4xx_it.c
+  ${CMAKE_SOURCE_DIR}/Core/Src/system_stm32f4xx.c
   )
 
-set(ASM_SOURCES
+set(ASM_SOURCES_Core
   ${CMAKE_SOURCE_DIR}/startup_stm32f405xx.s
   )
 
@@ -65,12 +71,12 @@ set_property(SOURCE
   ${CMAKE_SOURCE_DIR}/startup_stm32f405xx.s PROPERTY LANGUAGE C)
 
 add_executable(${PROJ}
-  ${C_SOURCES}
-  ${ASM_SOURCES}
+  ${C_SOURCES_Core}
+  ${ASM_SOURCES_Core}
+  ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/main.c
   )
 
 set(INCLUDES_COMMON
-  ${CMAKE_SOURCE_DIR}/Core/Inc/
   ${CMAKE_SOURCE_DIR}/Drivers/CMSIS/Include/
   ${CMAKE_SOURCE_DIR}/Drivers/CMSIS/Device/ST/STM32F4xx/Include/
   ${CMAKE_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Inc/
@@ -78,6 +84,8 @@ set(INCLUDES_COMMON
 
 target_include_directories(${PROJ} PRIVATE
   ${INCLUDES_COMMON}
+  ${FREERTOS_INCLUDES}
+  ${CMAKE_SOURCE_DIR}/Core/Inc/
   )
 
 target_compile_definitions(${PROJ} PRIVATE
@@ -96,3 +104,4 @@ add_custom_target(${PROJ}.bin ALL
 add_dependencies(${PROJ}.bin ${PROJ})
 
 add_subdirectory(test)
+add_subdirectory(samples)
