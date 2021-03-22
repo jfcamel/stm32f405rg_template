@@ -14,31 +14,8 @@ set(THUMB "-mthumb")
 set(FPU "-mfpu=fpv4-sp-d16")
 set(FLOAT-ABI "-mfloat-abi=hard")
 set(MCU "${CPU} ${THUMB} ${FPU} ${FLOAT-ABI}")
-
 set(DEBUG "-g3")
 set(OPTIMIZATION_LEVEL "-Os")
-
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindFreeRTOS.cmake)
-FindFreeRTOS(COMPILER GCC PROCESSOR ARM_CM4F HEAP heap_1)
-
-set(C_SOURCES_COMMON
-  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_gpio.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_rcc.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_utils.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_exti.c
-  )
-
-set(C_FLAGS_OPTIONS
-  PRIVATE ${CPU}
-  PRIVATE ${THUMB}
-  PRIVATE ${FPU}
-  PRIVATE ${FLOAT-ABI}
-  PRIVATE ${OPTIMIZATION_LEVEL}
-  PRIVATE ${DEBUG}
-  PRIVATE -ffunction-sections
-  PRIVATE -fdata-sections
-  PRIVATE -Wall
-  )
 
 set(DEFINITIONS_COMMON
   USE_FULL_LL_DRIVER
@@ -54,6 +31,28 @@ set(DEFINITIONS_COMMON
   INSTRUCTION_CACHE_ENABLE=1
   DATA_CACHE_ENABLE=1
   STM32F405xx
+  )
+
+set(C_FLAGS_OPTIONS
+  PRIVATE ${CPU}
+  PRIVATE ${THUMB}
+  PRIVATE ${FPU}
+  PRIVATE ${FLOAT-ABI}
+  PRIVATE ${OPTIMIZATION_LEVEL}
+  PRIVATE ${DEBUG}
+  PRIVATE -ffunction-sections
+  PRIVATE -fdata-sections
+  PRIVATE -Wall
+  )
+
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindFreeRTOS.cmake)
+FindFreeRTOS(COMPILER GCC PROCESSOR ARM_CM4F HEAP heap_1)
+
+set(C_SOURCES_COMMON
+  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_gpio.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_rcc.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_utils.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_exti.c
   )
 
 set(INCLUDES_COMMON
