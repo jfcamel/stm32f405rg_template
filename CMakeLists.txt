@@ -99,7 +99,9 @@ target_compile_options(${PROJ}
 target_link_options(${PROJ}
   ${C_FLAGS_OPTIONS}
   PRIVATE -T${CMAKE_CURRENT_LIST_DIR}/STM32F405RGTx_FLASH.ld
-  PRIVATE --specs=rdimon.specs
+  PRIVATE $<$<CONFIG:>:--specs=rdimon.specs>
+  PRIVATE $<$<CONFIG:Debug>:--specs=rdimon.specs>
+  PRIVATE $<$<CONFIG:Release>:--specs=nosys.specs>
   PRIVATE -Wl,--gc-sections
   )
 
