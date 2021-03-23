@@ -37,7 +37,7 @@ Target architecture is "STM32F405RG" which is
 
 
 ## Compile Option
-
+https://www.jfcamel.technology/2021/03/findfreertos-cmake.html
 
 - Default thumb instruction
 - Debug options -g3
@@ -53,7 +53,7 @@ To build this project, FreeRTOS & CppUTest are needed.
 [CppUTest](http://cpputest.github.io/)
 
 
-Please download FreeRTOS source and CppUTest Source.
+Please download FreeRTOS source and CppUTest source.
 
 To specify the directory where cpputest is placed, run the command below:
 
