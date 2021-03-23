@@ -47,7 +47,6 @@ set(TEST_SOURCES
   ${C_SOURCES_COMMON}
   ${C_SOURCES_Core}
   ${CMAKE_CURRENT_SOURCE_DIR}/Src/app_test_c.c
-  ${CMAKE_CURRENT_SOURCE_DIR}/Src/main.cpp
   ${ASM_SOURCES_Core}
   ${FREERTOS_SOURCES}
   )
@@ -60,6 +59,7 @@ endforeach()
 add_executable(${PROJ}-test
   ${TEST_SOURCES}
   ${CPPUTEST_SOURCES}
+  ${CMAKE_CURRENT_SOURCE_DIR}/Src/main.cpp
   )
 
 target_include_directories(${PROJ}-test PRIVATE
@@ -98,7 +98,6 @@ target_link_options(${PROJ}-test
 
   PRIVATE -T${CMAKE_CURRENT_LIST_DIR}/../STM32F405RGTx_FLASH.ld
   PRIVATE --specs=rdimon.specs
-  PRIVATE --specs=nano.specs
   PRIVATE -Wl,--gc-sections)
 
 add_custom_target(${PROJ}-test.bin ALL
